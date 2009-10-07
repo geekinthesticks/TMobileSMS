@@ -42,7 +42,7 @@ class TMobileSMS:
         self.webtext_success_url = "https://www.t-mobile.co.uk/service/your-account/private/wgt/sent-confirmation/"
 
 
-    def send_message(self, recipient, message, user, password):
+    def send_message(self, recipient, message, user, password, debug=false):
         """
         Send a text message.
         """
@@ -67,7 +67,9 @@ class TMobileSMS:
         loginpage = opener.open(self.login_url,  data)
         response = loginpage.read()
         login_redirect = loginpage.geturl()
-        #print loginpage.info()
+
+        if debug:
+            print loginpage.info()
 
         # Check if login was successful.
         searchstr = r"""^https://www.t-mobile.co.uk/service/your-account/private/home/"""
@@ -80,13 +82,16 @@ class TMobileSMS:
         # Go to the send a webtext page.
         textpage = opener.open( self.webtext_prepare_url )
         response = textpage.read()
-        print textpage.geturl()
-        print textpage.info()
+
+        if debug:
+            print textpage.geturl()
+            print textpage.info()
 
         if not(textpage.geturl() == self.webtext_prepare_url):
             return "Redirect to webtext page failed."
 
-        print "textpage.geturl(): ", textpage.geturl()
+        if debug:
+            print "textpage.geturl(): ", textpage.geturl()
 
         # Get the apache struct cookie from the page.
         compile_obj = re.compile(self.tagstr)
@@ -102,10 +107,16 @@ class TMobileSMS:
 
         
         messagedata = urllib.urlencode(self.message)
-        print "messagedata: ", messagedata
+
         textpage = opener.open(self.send_text_url, messagedata)
         response = textpage.read()
+
+        if debug:
+            print textpage.info()
+        
         if not(textpage.geturl() == self.webtext_success_url):
             print "There was a problem sending your message."
-            return "There was a problem sending your message."
+            if debug:
+                return "There was a problem sending your message."
+            
         return "Message sent."

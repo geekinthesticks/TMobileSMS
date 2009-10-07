@@ -55,7 +55,8 @@ class TMobileSMS:
         # Get initial session cookie. Now required.
         tmobile = opener.open(self.tmobile_url)
         response = tmobile.read()
-        print tmobile.info()
+        if debug:
+            print tmobile.info()
 
         if deliveryReport:
             values = {'username' : user,

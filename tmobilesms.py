@@ -42,7 +42,7 @@ class TMobileSMS:
         self.webtext_success_url = "https://www.t-mobile.co.uk/service/your-account/private/wgt/sent-confirmation/"
 
 
-    def send_message(self, recipient, message, user, password, debug=false):
+    def send_message(self, recipient, message, user, password, debug=false, deliveryReport=false):
         """
         Send a text message.
         """
@@ -57,9 +57,16 @@ class TMobileSMS:
         response = tmobile.read()
         print tmobile.info()
 
-        values = {'username' : user,
-                  'password' : password,
-                  'submit' : 'Login'}
+        if delivery_report:
+            values = {'username' : user,
+                      'password' : password,
+                      'sendDeliveryReport' : '1',
+                      'submit' : 'Login'}
+
+        else:    
+            values = {'username' : user,
+                      'password' : password,
+                      'submit' : 'Login'}
 
         data = urllib.urlencode(values)
         

@@ -19,6 +19,8 @@ from tmobilesms import *
 import optparse, sys
 
 # Dictionary for recipients.
+# Note the phone number format. Number is preceeded
+# by country code without 00 or + symbol.
 recipients = {'anne' : '44123456',
               'ian' : '44123456',
               'john' : '44123456'

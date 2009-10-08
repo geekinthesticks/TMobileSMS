@@ -55,6 +55,8 @@ def main():
     parser = OptionParser(usage)
     parser.add_option("-r", "--recipient", dest = "recipient")
     parser.add_option("-m", "--message", dest = "message")
+    parser.add_option("-d", "--debug", dest = "debug")
+    parser.add_option("-t", "--delivery-report", dest = "delivery_report")
     (options, args) = parser.parse_args()
     parser.check_required("-r")
     parser.check_required("-m")
@@ -71,8 +73,16 @@ def main():
         sys.exit()
 
     #print message
+    messageData = {}
+    messageData['recipient'] = recipients[options.recipient]
+    messageData['message'] = message
+    messageData['user'] = username
+    messageData['password'] = password
+    messageData['deliveryReport'] = 'False'
+    messageData['debug'] = 'False'
 
-    retval = mysms.send_message(recipients[options.recipient], message, username, password)
+
+    retval = mysms.send_message(messageData)
     print retval
 
 

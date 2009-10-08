@@ -41,8 +41,7 @@ class TMobileSMS:
         self.send_text_url = "https://www.t-mobile.co.uk/service/your-account/private/wgt/send-text-processing/"
         self.webtext_success_url = "https://www.t-mobile.co.uk/service/your-account/private/wgt/sent-confirmation/"
 
-
-    def send_message(self, recipient, message, user, password, debug=False, deliveryReport=False):
+    def send_message(self, message_data):
         """
         Send a text message.
         """
@@ -55,18 +54,18 @@ class TMobileSMS:
         # Get initial session cookie. Now required.
         tmobile = opener.open(self.tmobile_url)
         response = tmobile.read()
-        if debug:
+        if (message_data['debug']):
             print tmobile.info()
 
-        if deliveryReport:
-            values = {'username' : user,
-                      'password' : password,
+        if (message_data['deliveryReport']):
+            values = {'username' : message_data['user'],
+                      'password' : message_data['password'],
                       'sendDeliveryReport' : '1',
                       'submit' : 'Login'}
 
         else:    
-            values = {'username' : user,
-                      'password' : password,
+            values = {'username' : message_data['user'],
+                      'password' : message_data['password'],
                       'submit' : 'Login'}
 
         data = urllib.urlencode(values)
@@ -76,7 +75,7 @@ class TMobileSMS:
         response = loginpage.read()
         login_redirect = loginpage.geturl()
 
-        if debug:
+        if message_data['debug']:
             print loginpage.info()
 
         # Check if login was successful.
@@ -91,14 +90,14 @@ class TMobileSMS:
         textpage = opener.open( self.webtext_prepare_url )
         response = textpage.read()
 
-        if debug:
+        if message_data['debug']:
             print textpage.geturl()
             print textpage.info()
 
         if not(textpage.geturl() == self.webtext_prepare_url):
             return "Redirect to webtext page failed."
 
-        if debug:
+        if message_data['debug']:
             print "textpage.geturl(): ", textpage.geturl()
 
         # Get the apache struct cookie from the page.
@@ -109,8 +108,8 @@ class TMobileSMS:
         apache_token = match_obj.group(2)
 
         self.message = {'org.apache.struts.taglib.html.TOKEN' : apache_token,
-           'selectedRecipients' : recipient,
-           'message' : message,
+           'selectedRecipients' : message_data['recipient'],
+           'message' : message_data['message'],
            'submit' : 'Send'}
 
         
@@ -119,12 +118,14 @@ class TMobileSMS:
         textpage = opener.open(self.send_text_url, messagedata)
         response = textpage.read()
 
-        if debug:
+        if message_data['debug']:
             print textpage.info()
+            print textpage.geturl()
+        
         
         if not(textpage.geturl() == self.webtext_success_url):
-            print "There was a problem sending your message."
-            if debug:
-                return "There was a problem sending your message."
+            return "There was a problem sending your message."
+            if message_data['debug']:
+                print "There was a problem sending your message."
             
         return "Message sent."

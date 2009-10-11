@@ -17,18 +17,43 @@
 
 from tmobilesms import *
 import optparse, sys
+import ConfigParser
 
-# Dictionary for recipients.
-# Note the phone number format. Number is preceeded
+# Recipient data and T-Mobile user name and password are
+# stored in ~/tmobilesms.
+
+# Note the recipient phone number format. Number is preceeded
 # by country code without 00 or + symbol.
-recipients = {'anne' : '44123456',
-              'ian' : '44123456',
-              'john' : '44123456'
-              }
 
-# Username and password for T-Mobile web site.
-username = "username"
-password = "password"
+
+def read_config():
+    """
+    Read the configuration data.
+    """
+    user_data = {}
+    recipient_data = []
+    recipients = {}
+    
+    config = ConfigParser.ConfigParser()
+    
+    config.read(os.path.expanduser("/home/ian/.tmobilesms"))
+    if config == None:
+        print "Unable to read configuration file: /home/ian/.tmobilesms."
+        sys.exit(2)
+
+    try:
+        user_data["user"] = config.get("tmobile", "user")
+        user_data["password"] = config.get("tmobile", "password")
+
+        recipient_data = config.items("recipients")
+        for key, value in recipient_data:
+            recipients[key] = value
+            
+    except ConfigParser.NoSectionError:
+        print "Error parsing file."
+        sys.exit(2)
+        
+    return user_data, recipients
 
 
 class OptionParser (optparse.OptionParser):
@@ -52,14 +77,17 @@ def truncate(string,target):
 
 
 def main():
-    
+    user_data = {}
+    recipients = {}
+
+
     usage = "usage: %prog [options] arg"
     parser = OptionParser(usage)
     parser.add_option("-r", "--recipient", dest = "recipient", help = "Recipent name")
     parser.add_option("-m", "--message", dest = "message", help = "Message (max. 160 chars)")
     parser.add_option("-d", "--debug", dest = "debug", help = "Print debug information.")
-    parser.add_option("-t", "--delivery-report", action = store_true, dest = "delivery_report", default = False, help = "Send a delivery report.")
-    parser.add_option("-h", "--help")
+    parser.add_option("-t", "--delivery-report", action = "store_true", dest = "delivery_report", default = False, help = "Send a delivery report.")
+
     (options, args) = parser.parse_args()
     parser.check_required("-r")
     parser.check_required("-m")
@@ -71,16 +99,17 @@ def main():
     message = truncate(options.message, 160)
 
 
+    user_data, recipients = read_config()
+
     if not(options.recipient in recipients):
         print "User: %s not known" % (options.recipient)
         sys.exit()
 
-    #print message
     messageData = {}
     messageData['recipient'] = recipients[options.recipient]
     messageData['message'] = message
-    messageData['user'] = username
-    messageData['password'] = password
+    messageData['user'] =  user_data['user']
+    messageData['password'] = user_data['password']
     messageData['deliveryReport'] = 'False'
     messageData['debug'] = 'False'
 

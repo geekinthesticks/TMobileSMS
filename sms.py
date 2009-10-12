@@ -24,6 +24,38 @@ import ConfigParser
 # Note the phone number format. Number is preceeded
 # by country code without 00 or + symbol.
 
+
+
+def read_config():
+    """
+    Read the configuration data.
+    """
+    user_data = {}
+    recipient_data = []
+    recipients = {}
+    
+    config = ConfigParser.ConfigParser()
+    
+    config.read(os.path.expanduser("/home/ian/.tmobilesms"))
+    if config == None:
+        print "Unable to read configuration file: /home/ian/.tmobilesms."
+        sys.exit(2)
+
+    try:
+        user_data["user"] = config.get("tmobile", "user")
+        user_data["password"] = config.get("tmobile", "password")
+
+        recipient_data = config.items("recipients")
+        for key, value in recipient_data:
+            recipients[key] = value
+            
+    except ConfigParser.NoSectionError:
+        print "Error parsing file."
+        sys.exit(2)
+        
+    return user_data, recipients
+
+
 def read_config():
     """
     Read the configuration data.
@@ -78,14 +110,15 @@ def truncate(string,target):
 def main():
 
     user_data = {}
-    recipients = {}    
+    recipients = {}
+
+
     usage = "usage: %prog [options] arg"
     parser = OptionParser(usage)
     parser.add_option("-r", "--recipient", dest = "recipient", help = "Recipent name")
     parser.add_option("-m", "--message", dest = "message", help = "Message (max. 160 chars)")
     parser.add_option("-d", "--debug", dest = "debug", help = "Print debug information.")
     parser.add_option("-t", "--delivery-report", action = "store_true", dest = "delivery_report", default = False, help = "Send a delivery report.")
-
 
     (options, args) = parser.parse_args()
     parser.check_required("-r")
@@ -99,11 +132,12 @@ def main():
     message = truncate(options.message, 160)
 
 
+    user_data, recipients = read_config()
+
     if not(options.recipient in recipients):
         print "User: %s not known" % (options.recipient)
         sys.exit()
 
-    #print message
     messageData = {}
     messageData['recipient'] = recipients[options.recipient]
     messageData['message'] = message

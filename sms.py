@@ -59,6 +59,12 @@ def main():
     parser.add_option("-m", "--message", dest = "message")
     parser.add_option("-d", "--debug", dest = "debug")
     parser.add_option("-t", "--delivery-report", dest = "delivery_report")
+    parser.add_option("-r", "--recipient", dest = "recipient", help = "Recipent name")
+    parser.add_option("-m", "--message", dest = "message", help = "Message (max. 160 chars)")
+    parser.add_option("-d", "--debug", dest = "debug", help = "Print debug information.")
+    parser.add_option("-t", "--delivery-report", action = store_true, dest = "delivery_report", default = False, help = "Send a delivery report.")
+
+
     (options, args) = parser.parse_args()
     parser.check_required("-r")
     parser.check_required("-m")

@@ -106,6 +106,16 @@ def truncate(string,target):
     else:
         return string
 
+def send_message(messageData={}):
+    """
+    Send an SMS.
+    """
+    mysms = TMobileSMS()
+
+
+    retval = mysms.send_message(messageData)
+    print retval
+
 
 def main():
 
@@ -119,7 +129,7 @@ def main():
     parser.add_option("-m", "--message", dest = "message", help = "Message (max. 160 chars)")
     parser.add_option("-d", "--debug", dest = "debug", help = "Print debug information.")
     parser.add_option("-t", "--delivery-report", action = "store_true", dest = "delivery_report", default = False, help = "Send a delivery report.")
-    parser.add_option("-p", "--print-recipients", dest = "list_recipients", default = False, action = "store_true", help = "Print a list of recipients")
+    parser.add_option("-p", "--print-recipients", dest = "list_recipients", default = False, action = "store_true", help = "Print the list of all possible recipients")
 
 
     (options, args) = parser.parse_args()
@@ -133,20 +143,16 @@ def main():
 
     if options.list_recipients:
         for key, item in recipients.items():
-            print "Name: %s Tel: %s" % (key, item)
+            #print "Name: %s Tel: %s" % (key, item)
+            print "{0:10} {1:10}".format(key, item)
         sys.exit()
-
-    mysms = TMobileSMS()
-
-    # Trim message to 160 characters.
-    message = truncate(options.message, 160)
-
-
-    user_data, recipients = read_config()
 
     if not(options.recipient in recipients):
         print "User: %s not known" % (options.recipient)
         sys.exit()
+
+    # Trim message to 160 characters.
+    message = truncate(options.message, 160)
 
     messageData = {}
     messageData['recipient'] = recipients[options.recipient]
@@ -156,10 +162,7 @@ def main():
     messageData['deliveryReport'] = 'False'
     messageData['debug'] = 'False'
 
-
-    retval = mysms.send_message(messageData)
-    print retval
-
+    send_message(messageData)
 
 if __name__ == "__main__":
     main()

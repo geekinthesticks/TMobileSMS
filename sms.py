@@ -129,7 +129,7 @@ def main():
     parser.add_option("-m", "--message", dest = "message", help = "Message (max. 160 chars)")
     parser.add_option("-d", "--debug", dest = "debug", help = "Print debug information.")
     parser.add_option("-t", "--delivery-report", action = "store_true", dest = "delivery_report", default = False, help = "Send a delivery report.")
-    parser.add_option("-p", "--print-recipients", dest = "list_recipients", default = False, action = "store_true", help = "Print the list of all possible recipients")
+    parser.add_option("-p", "--print-recipients", dest = "list_recipients", default = False, action = "store_true", help = "Print the list of stored recipients")
 
 
     (options, args) = parser.parse_args()

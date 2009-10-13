@@ -137,7 +137,7 @@ def main():
     if not(options.list_recipients):
         parser.check_required("-r")
         parser.check_required("-m")
-        sys.exit()
+ 
 
     user_data, recipients = read_config()
 

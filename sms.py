@@ -66,9 +66,9 @@ def read_config():
     
     config = ConfigParser.ConfigParser()
     
-    config.read(os.path.expanduser("/home/ian/.tmobilesms"))
+    config.read(os.path.expanduser("~/.tmobilesms"))
     if config == None:
-        print "Unable to read configuration file: /home/ian/.tmobilesms."
+        print "Unable to read configuration file: ", os.path.expanduser("~/.tmobilesms")  
         sys.exit(2)
 
     try:

@@ -119,12 +119,22 @@ def main():
     parser.add_option("-m", "--message", dest = "message", help = "Message (max. 160 chars)")
     parser.add_option("-d", "--debug", dest = "debug", help = "Print debug information.")
     parser.add_option("-t", "--delivery-report", action = "store_true", dest = "delivery_report", default = False, help = "Send a delivery report.")
+    parser.add_option("-p", "--print-recipients", dest = "list_recipients", default = False, action = "store_true", help = "Print a list of recipients")
+
 
     (options, args) = parser.parse_args()
-    parser.check_required("-r")
-    parser.check_required("-m")
+
+    if not(options.list_recipients):
+        parser.check_required("-r")
+        parser.check_required("-m")
+        sys.exit()
 
     user_data, recipients = read_config()
+
+    if options.list_recipients:
+        for key, item in recipients.items():
+            print "Name: %s Tel: %s" % (key, item)
+        sys.exit()
 
     mysms = TMobileSMS()
 

@@ -26,7 +26,7 @@ import ConfigParser
 
 
 
-def read_config():
+def read_config(config_file):
     """
     Read the configuration data.
     """
@@ -36,9 +36,9 @@ def read_config():
     
     config = ConfigParser.ConfigParser()
     
-    config.read(os.path.expanduser("/home/ian/.tmobilesms"))
+    config.read(config_file)
     if config == None:
-        print "Unable to read configuration file: /home/ian/.tmobilesms."
+        print "Unable to read configuration file: ", config_file
         sys.exit(2)
 
     try:
@@ -56,7 +56,7 @@ def read_config():
     return user_data, recipients
 
 
-def read_config():
+def read_config(config_file):
     """
     Read the configuration data.
     """
@@ -121,7 +121,7 @@ def main():
 
     user_data = {}
     recipients = {}
-
+    config_file = None
 
     usage = "usage: %prog [options] arg"
     parser = OptionParser(usage)
@@ -130,6 +130,7 @@ def main():
     parser.add_option("-d", "--debug", dest = "debug", help = "Print debug information.")
     parser.add_option("-t", "--delivery-report", action = "store_true", dest = "delivery_report", default = False, help = "Send a delivery report.")
     parser.add_option("-p", "--print-recipients", dest = "list_recipients", default = False, action = "store_true", help = "Print the list of stored recipients")
+    parser.add_option("-c", "--config-file", dest = "config_file", help = "Configuration file.")
 
 
     (options, args) = parser.parse_args()
@@ -138,8 +139,13 @@ def main():
         parser.check_required("-r")
         parser.check_required("-m")
  
-
-    user_data, recipients = read_config()
+    if options.config_file == None:
+        print "No config file specified. Using default ~/user/.tmobilesms"
+        options.config_file = os.path.expanduser("/home/ian/.tmobilesms")
+        user_data, recipients = read_config(options.config_file)
+    else:
+        print "Using config file: ", options.config_file
+        user_data, recipients = read_config(options.config_file)
 
     if options.list_recipients:
         for key, item in recipients.items():

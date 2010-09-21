@@ -141,7 +141,8 @@ def main():
  
     if options.config_file == None:
         print "No config file specified. Using default ~/user/.tmobilesms"
-        options.config_file = os.path.expanduser("/home/ian/.tmobilesms")
+        options.config_file = os.path.join(os.path.expanduser("~/"), ".tmobilesms")
+
         user_data, recipients = read_config(options.config_file)
     else:
         print "Using config file: ", options.config_file

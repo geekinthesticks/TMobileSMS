@@ -1,0 +1,10 @@
+TMobileSMS.
+===========
+
+TMobileSMS is a Python class module that alows you to send text messages from the T-Mobile UK web site. In order to send messages you must have an account on the T-Mobile UK web site at http://www.-tmobile.co.uk. Before trying to use the library, you should ensure that you can send messages via the T-Mobile web site.
+
+Please note that this library is not in any way supported or endorsed by T-Mobile. The protocols it uses are undocumented and may stop working at any time.
+
+Comments, feedback and patches are welcome and can be sent to me at ian at manor-farm dot org.
+
+Ian Barton.

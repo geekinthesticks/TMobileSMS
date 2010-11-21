@@ -56,6 +56,8 @@ class TMobileSMS:
         response = tmobile.read()
         if (message_data['debug']):
             print tmobile.info()
+	else:
+	    print "Step 1 of 3."
 
         if (message_data['deliveryReport']):
             values = {'username' : message_data['user'],
@@ -77,6 +79,8 @@ class TMobileSMS:
 
         if message_data['debug']:
             print loginpage.info()
+	else:
+	    print "Step 2 of 3."
 
         # Check if login was successful.
         searchstr = r"""^https://www.t-mobile.co.uk/service/your-account/private/home/"""
@@ -93,6 +97,8 @@ class TMobileSMS:
         if message_data['debug']:
             print textpage.geturl()
             print textpage.info()
+	else:
+	    print "Step 3 of 3."
 
         if not(textpage.geturl() == self.webtext_prepare_url):
             return "Redirect to webtext page failed."
@@ -122,10 +128,7 @@ class TMobileSMS:
             print textpage.info()
             print textpage.geturl()
         
-        
         if not(textpage.geturl() == self.webtext_success_url):
             return "There was a problem sending your message."
-            if message_data['debug']:
-                print "There was a problem sending your message."
             
         return "Message sent."

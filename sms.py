@@ -20,7 +20,7 @@ import optparse, sys
 import ConfigParser
 
 # Recipient data and T-Mobile user name and password are
-# stored in ~/tmobilesms.
+# stored in ~/.tmobilesms .
 # Note the phone number format. Number is preceeded
 # by country code without 00 or + symbol.
 
@@ -123,11 +123,11 @@ def main():
     recipients = {}
     config_file = None
 
-    usage = "usage: %prog [options] arg"
+    usage = "usage: %prog [options] arg\nTry `%prog --help' for more information."
     parser = OptionParser(usage)
     parser.add_option("-r", "--recipient", dest = "recipient", help = "Recipent name")
     parser.add_option("-m", "--message", dest = "message", help = "Message (max. 160 chars)")
-    parser.add_option("-d", "--debug", dest = "debug", help = "Print debug information.")
+    parser.add_option("-d", "--debug", action = "store_true", dest = "debug", help = "Print debug information.")
     parser.add_option("-t", "--delivery-report", action = "store_true", dest = "delivery_report", default = False, help = "Send a delivery report.")
     parser.add_option("-p", "--print-recipients", dest = "list_recipients", default = False, action = "store_true", help = "Print the list of stored recipients")
     parser.add_option("-c", "--config-file", dest = "config_file", help = "Configuration file.")
@@ -140,7 +140,7 @@ def main():
         parser.check_required("-m")
  
     if options.config_file == None:
-        print "No config file specified. Using default ~/user/.tmobilesms"
+        print "No config file specified. Using default ~/.tmobilesms"
         options.config_file = os.path.join(os.path.expanduser("~/"), ".tmobilesms")
 
         user_data, recipients = read_config(options.config_file)
@@ -166,8 +166,8 @@ def main():
     messageData['message'] = message
     messageData['user'] =  user_data['user']
     messageData['password'] = user_data['password']
-    messageData['deliveryReport'] = 'False'
-    messageData['debug'] = 'False'
+    messageData['deliveryReport'] = options.delivery_report
+    messageData['debug'] = options.debug
 
     send_message(messageData)
 

@@ -1,6 +1,11 @@
-Changelog.
-==========
+* Changelog.
+** [2010-11-21 Sun]
+Applied a patch from Carles Pina i Estany <carles@pina.cat>:
 
-2009-10-08.
-===========
+- Show some progress information.
+- Fix bug where debug information was always printed.
+- Fix bug in help text for config file.
+
+** [2009-10-08 Thu]
+
 Initial release.

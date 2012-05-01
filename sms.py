@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 
 
 ##   Copyright (C) 2009 Ian Barton.
@@ -33,12 +33,12 @@ def read_config(config_file):
     user_data = {}
     recipient_data = []
     recipients = {}
-    
+
     config = ConfigParser.ConfigParser()
-    
+
     config.read(config_file)
     if config == None:
-        print "Unable to read configuration file: ", config_file
+        print ("Unable to read configuration file: %s ") % (config_file)
         sys.exit(2)
 
     try:
@@ -48,11 +48,11 @@ def read_config(config_file):
         recipient_data = config.items("recipients")
         for key, value in recipient_data:
             recipients[key] = value
-            
+
     except ConfigParser.NoSectionError:
-        print "Error parsing file."
+        print "Error parsing file.", config_file
         sys.exit(2)
-        
+
     return user_data, recipients
 
 
@@ -63,12 +63,13 @@ def read_config(config_file):
     user_data = {}
     recipient_data = []
     recipients = {}
-    
+
     config = ConfigParser.ConfigParser()
-    
-    config.read(os.path.expanduser("~/.tmobilesms"))
+
+    # config.read(os.path.expanduser("~/.tmobilesms"))
+    config.read(config_file)
     if config == None:
-        print "Unable to read configuration file: ", os.path.expanduser("~/.tmobilesms")  
+        print ("Unable to read configuration file: %s ") % (config_file)
         sys.exit(2)
 
     try:
@@ -78,14 +79,14 @@ def read_config(config_file):
         recipient_data = config.items("recipients")
         for key, value in recipient_data:
             recipients[key] = value
-            
+
     except ConfigParser.NoSectionError:
-        print "Error parsing file."
+        print "Error parsing file.", config_file
         sys.exit(2)
-        
+
     return user_data, recipients
 
- 
+
 
 class OptionParser (optparse.OptionParser):
 
@@ -138,7 +139,7 @@ def main():
     if not(options.list_recipients):
         parser.check_required("-r")
         parser.check_required("-m")
- 
+
     if options.config_file == None:
         print "No config file specified. Using default ~/.tmobilesms"
         options.config_file = os.path.join(os.path.expanduser("~/"), ".tmobilesms")
